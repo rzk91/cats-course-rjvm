@@ -94,7 +94,7 @@ object Evaluation {
   val deferredInstantEval: Eval[Int] = defer(Eval.now { println("Computing right now!"); 42 })
   val deferredAlwaysEval: Eval[Int] = defer(alwaysEval)
 
-  // Exercise 3: Rewrite this method with Evals
+  // Exercise 3: Rewrite this method with Eval
   def reverseList[A](list: List[A]): List[A] =
     if (list.isEmpty) list else reverseList(list.tail) :+ list.head
 

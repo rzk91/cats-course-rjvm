@@ -1,7 +1,11 @@
 package part3datamanipulation
 
+import cats.{Functor, Monoid}
+import cats.data.WriterT
+
 import scala.annotation.tailrec
 import scala.concurrent.Future
+import scala.util.Try
 
 object Writers {
 
@@ -115,7 +119,7 @@ object Writers {
         _        <- Writer(Vector(s"Computed sum(${n - 1}) = $lowerSum"), n)
       } yield lowerSum + n
 
-  def main(args: Array[String]): Unit = {
+  def _main(args: Array[String]): Unit = {
     println(desiredValue)
     println(desiredLogs)
     println(bothWriter.run)
@@ -145,7 +149,21 @@ object Writers {
     val sumFuture2 = Future(sumWithLogsTailrec(5))
     val logs1 = sumFuture1.map(_.written) // Logs from thread 1
     val logs2 = sumFuture2.map(_.written) // Logs from thread 2
+    logs1.foreach(_.foreach(println))
+    logs2.foreach(_.foreach(println))
+  }
 
-    // Using println to prove this would basically defeat the purpose of the example! :D
+  // Why does WriterT's liftF method use an Applicative instead of just a Functor? We just need the `map` method...
+  def liftF_[F[_], L, V](fv: F[V])(implicit monoidL: Monoid[L], F: Functor[F]): WriterT[F, L, V] =
+    WriterT(F.map(fv)(v => (monoidL.empty, v)))
+
+  def main(args: Array[String]): Unit = {
+    val writer = someWriter.tell(List("Something else")).tell(List("And something more"))
+    writer.written.foreach(println)
+
+    val writer2 = WriterT.liftF[Option, List[String], Int](Option(2))
+    writer2.tell(List("Lifting Option(2)")).run.foreach(println)
+
+    liftF_[Try, Vector[String], Int](Try(3)).tell(Vector("Seems to work just fine!")).run.foreach(println)
   }
 }

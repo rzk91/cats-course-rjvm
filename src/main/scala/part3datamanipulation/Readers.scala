@@ -99,8 +99,8 @@ object Readers {
       lastOrder <- dbReader.map(_.getLastOrderId(username))
       status    <- dbReader.map(_.getOrderStatus(lastOrder))
       content = s"Your last order has the status: $status"
-      response <- emailServiceReader.map(_.sendMail(userEmail, content))
-    } yield response
+      emailService <- emailServiceReader
+    } yield emailService.sendMail(userEmail, content)
   }.run(config)
 
   // Readers can be used for dependency injection!

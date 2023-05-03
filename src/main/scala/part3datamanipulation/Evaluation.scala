@@ -88,6 +88,7 @@ object Evaluation {
    */
 
   // My solution (slightly wrong: use Eval.later first!)
+  // Wrong because using eval.flatMap(...) causes eval to be evaluated which defeats the lazy evaluation and hence, stack-safety
 //  def defer[E](eval: => Eval[E]): Eval[E] = eval.flatMap(e => Eval.later(e))
   def defer[E](eval: => Eval[E]): Eval[E] = Eval.later(()).flatMap(_ => eval)
 

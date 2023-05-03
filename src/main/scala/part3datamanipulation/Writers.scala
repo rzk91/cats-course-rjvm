@@ -129,22 +129,22 @@ object Writers {
 
     println(emptyWriter.run)
 
-    println("\n ===== Exercise 1 ======")
+    printlnWithSeparator("Exercise 1")
     println(countAndSay(5))
     countAndLogTailrec(5).written.foreach(println)
     countAndLog(5).written.foreach(println)
 
-    println("\n ===== Exercise 2 =====")
+    printlnWithSeparator("Exercise 2")
     println(naiveSum(5))
     println(sumWithLogsTailrec(5).value)
     sumWithLogsTailrec(5).written.foreach(println)
     sumWithLogs(5).written.foreach(println)
 
-    println("\n ===== Why naive sum is bad =====")
+    printlnWithSeparator("Why naive sum is bad")
     Future(naiveSum(10)).foreach(println)
     Future(naiveSum(10)).foreach(println)
 
-    println("\n ===== using Future with Writers =====")
+    printlnWithSeparator("using Future with Writers")
     val sumFuture1 = Future(sumWithLogsTailrec(5))
     val sumFuture2 = Future(sumWithLogsTailrec(5))
     val logs1 = sumFuture1.map(_.written) // Logs from thread 1

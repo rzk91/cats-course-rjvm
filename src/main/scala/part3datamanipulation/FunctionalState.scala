@@ -9,7 +9,7 @@ object FunctionalState {
   val countAndSay: State[Int, String] = State(count => (count + 1, s"Counted $count"))
 
   // To execute, use `.run`
-  val (_, _) = countAndSay.run(10).value // .run returns an `Eval`, so use .value to get output
+  countAndSay.run(10).value // .run returns an `Eval`, so use .value to get output
 
   // Example of how state can be managed in a functional way
   // Iterative (ugh!)
@@ -94,13 +94,14 @@ object FunctionalState {
     def apply(v: Int): Trick = new Trick(v, v)
   }
 
+  // TODO: Use `Writer` to show what's happening
   val mathTrick: State[Trick, Int] = for {
     init <- get
-    _ <- set(init.update(_ * 2))
-    _ <- modify[Trick](_.update(_ + 50))
-    _ <- modify[Trick](_.update(_ / 2))
-    _ <- modify[Trick](_.subtractOriginal)
-    out <- get
+    _    <- set(init.update(_ * 2))
+    _    <- modify[Trick](_.update(_ + 50))
+    _    <- modify[Trick](_.update(_ / 2))
+    _    <- modify[Trick](_.subtractOriginal)
+    out  <- get
   } yield out.curr
 
   def main(args: Array[String]): Unit = {
